@@ -4,16 +4,41 @@ import "firebase/compat/auth";
 
 //
 const config = {
-  apiKey: "AIzaSyCOUeaU1efB5CQfleoKRw34-13R9URp0to",
-  authDomain: "ti-verse.firebaseapp.com",
-  projectId: "ti-verse",
-  storageBucket: "ti-verse.appspot.com",
-  messagingSenderId: "601603738801",
-  appId: "1:601603738801:web:5bb99bda368e0c1935a690",
-  measurementId: "G-1SCKV8Y9B0",
+  apiKey: "AIzaSyD78MDf_GiDO1gQHTfPBYGkSI0dWEsXGPI",
+  authDomain: "new-ti-verse.firebaseapp.com",
+  projectId: "new-ti-verse",
+  storageBucket: "new-ti-verse.appspot.com",
+  messagingSenderId: "373298190620",
+  appId: "1:373298190620:web:56a82bd02426cd311802d9",
+  measurementId: "G-SMZFZWY58X",
 };
 
 firebase.initializeApp(config);
+
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+  if (!userAuth) return;
+
+  const userRef = firestore.doc(`users/${userAuth.uid}`);
+
+  const snapShot = await userRef.get();
+
+  if (!snapShot.exists) {
+    const { displayName, email } = userAuth;
+    const createdAt = new Date();
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...additionalData,
+      });
+    } catch (error) {
+      console.log("error creating user", error.message);
+    }
+  }
+
+  return userRef;
+};
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
